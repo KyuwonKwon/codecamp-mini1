@@ -1,0 +1,18 @@
+version: "3.7"
+
+services:
+  minicafe-be:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./index.js:/myfolder/index.js
+      - ./email.js:/myfolder/email.js
+      - ./phone.js:/myfolder/phone.js
+    ports:
+      - 3000:3000
+
+  minicafe-db:
+    image: mongo:5
+    ports:
+      - 27017:27017
