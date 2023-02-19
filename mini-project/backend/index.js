@@ -1,12 +1,17 @@
 import "dotenv/config.js";
 import cors from "cors";
 import express from "express";
+import swaggerUi from "swagger-ui-express";
+import swaggerJSDoc from "swagger-jsdoc";
 import { checkValidationPhone, getToken, sendTokenToSMS } from "./phone.js";
 import { checkValidationEmail, getWelcomeTemplate, sendTemplateToEmail } from "./email.js";
 import mongoose from "mongoose";
 import { Starbucks } from "./models/starbucksSchema.js";
 import { Token } from "./models/tokenSchema.js";
 import { User } from "./models/userSchema.js";
+import { customRegistrationNumber } from "./personalnumber.js";
+import cheerio from "cheerio";
+import axios from "axios";
 
 const app = express();
 app.use(express.json());
@@ -17,7 +22,7 @@ app.post("/tokens/phone", async (req, res) => {
   const phoneWithDash = checkValidationPhone(phone);
   if (phoneWithDash) {
     const newToken = getToken();
-    // sendTokenToSMS(phone, token);
+    sendTokenToSMS(phone, newToken);
     const token = new Token({
       token: newToken,
       phone: phone,
@@ -29,7 +34,7 @@ app.post("/tokens/phone", async (req, res) => {
     } else {
       token.save();
     }
-    res.send(`${newToken}${phoneWithDash}으로 인증 문자가 전송되었습니다.`);
+    res.send(`${phoneWithDash}으로 인증 문자가 전송되었습니다.`);
   }
 });
 app.patch("/tokens/phone", async (req, res) => {
@@ -47,15 +52,28 @@ app.patch("/tokens/phone", async (req, res) => {
 });
 
 app.post("/users", async (req, res) => {
-  const input = req.body;
-  console.log(req.body);
+  let input = req.body;
+  // console.log(req.body);
   if (checkValidationEmail(input.email)) {
-    const found = await Token.findOne({ phone: input.phone }).exec();
-    console.log(found);
-    if (found.token === input.token) {
+    const found = await Token.findOne({ phone: input.phone });
+    // console.log(found);
+    if (found.isAuth && input.token === found.token) {
+      // console.log("정상")
+      input.personal = customRegistrationNumber(input.personal);
+      let og = {};
+      const result = await axios.get(input.prefer);
+      const $ = cheerio.load(result.data);
+      $("meta").each((_, el) => {
+        if ($(el).attr("property")) {
+          console.log(og);
+          og[$(el).attr("property").split(":")[1]] = $(el).attr("content");
+        }
+      });
+      input["og"] = og;
       const user = new User(input);
-      user.save();
-      //   sendTemplateToEmail(req.body.email, getWelcomeTemplate());
+      await user.save();
+      sendTemplateToEmail(input.email, getWelcomeTemplate(input));
+      res.send("정상반영");
     } else {
       res.status(422).send("에러!! 핸드폰 번호가 인증되지 않았습니다.");
     }
@@ -72,6 +90,7 @@ app.get("/starbucks", async (_, res) => {
   res.send(menu);
 });
 
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerJSDoc(options)));
 // 몽고DB 접속
 mongoose.connect("mongodb://minicafe-db:27017/cafe");
 

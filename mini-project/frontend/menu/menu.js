@@ -38,6 +38,6 @@ const createMenuCard = (data) => {
   const menuWrapper = document.querySelector("#Menu_Background");
   menuCardWrapper.appendChild(menuCardImgBox);
   menuCardWrapper.appendChild(menuCardName);
-  menuCardWrapper.appendChild(menuCardInfo);
+  // menuCardWrapper.appendChild(menuCardInfo);
   menuWrapper.appendChild(menuCardWrapper);
 };
