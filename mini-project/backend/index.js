@@ -12,6 +12,7 @@ import { User } from "./models/userSchema.js";
 import { customRegistrationNumber } from "./personalnumber.js";
 import cheerio from "cheerio";
 import axios from "axios";
+import { options } from "./swagger/config.js";
 
 const app = express();
 app.use(express.json());
@@ -22,7 +23,7 @@ app.post("/tokens/phone", async (req, res) => {
   const phoneWithDash = checkValidationPhone(phone);
   if (phoneWithDash) {
     const newToken = getToken();
-    sendTokenToSMS(phone, newToken);
+    // sendTokenToSMS(phone, newToken);
     const token = new Token({
       token: newToken,
       phone: phone,
@@ -53,6 +54,8 @@ app.patch("/tokens/phone", async (req, res) => {
 
 app.post("/users", async (req, res) => {
   let input = req.body;
+  // console.log(req);
+  // console.log(input);
   // console.log(req.body);
   if (checkValidationEmail(input.email)) {
     const found = await Token.findOne({ phone: input.phone });
@@ -78,7 +81,7 @@ app.post("/users", async (req, res) => {
       res.status(422).send("에러!! 핸드폰 번호가 인증되지 않았습니다.");
     }
   } else {
-    res.send("올바른 이메일 주소를 입력해주세요");
+    res.status(422).send("올바른 이메일 주소를 입력해주세요");
   }
 });
 app.get("/users", async (_, res) => {

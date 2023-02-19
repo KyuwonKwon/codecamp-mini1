@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
+      - ./swagger/:/myfolder/swagger/
       - ./index.js:/myfolder/index.js
       - ./email.js:/myfolder/email.js
       - ./phone.js:/myfolder/phone.js
