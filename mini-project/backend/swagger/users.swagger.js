@@ -15,18 +15,30 @@
  *                  type: array
  *                  items:
  *                      properties:
- *                          number:
- *                              type: int
- *                              example: 3
- *                          writer:
+ *                          name:
  *                              type: string
- *                              example: 철수
- *                          title:
+ *                              example: 규원
+ *                          email:
  *                              type: string
- *                              example: 제목입니다~~~
- *                          contents:
+ *                              example: kkwon920@gmail.com
+ *                          personal:
  *                              type: string
- *                              example: 내용입니다!!!
+ *                              example: 212121-1111111
+ *                          prefer:
+ *                              type: string
+ *                              example: http://www.naver.com
+ *                          pwd:
+ *                              type: string
+ *                              example: 1234
+ *                          phone:
+ *                              type: string
+ *                              example: "01047802176"
+ *                          og:
+ *                              type: object
+ *                              example:
+ *                                      image: "https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png"
+ *                                      title: "네이버"
+ *                                      description: "네이버 메인에서 다양한 정보와 유용한 컨텐츠를 만나 보세요"
  */
 
 /**

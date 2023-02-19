@@ -9,7 +9,7 @@
  *     requestBody:
  *            name: user
  *            required: true
- *            description: 요청받은 전화번호
+ *            description: 요청받을 전화번호
  *            content:
  *              application/json:
  *                  schema:
@@ -38,7 +38,7 @@
  *     requestBody:
  *            name: user
  *            required: true
- *            description: 대조하려는 전화번호와 토큰
+ *            description: 대조 요청하려는 전화번호와 토큰
  *            content:
  *              application/json:
  *                  schema:
